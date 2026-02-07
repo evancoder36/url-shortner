@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting - EvansLinks</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔄</text></svg>">
+</head>
+<body>
+    <div class="redirect-page">
+        <div class="redirect-container">
+            <div class="loading-animation">
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+                <div class="spinner-ring"></div>
+            </div>
+            
+            <h1 class="redirect-title">Redirecting...</h1>
+            <p class="redirect-message">You will be redirected to your destination shortly.</p>
+            
+            <div id="redirectInfo" class="redirect-info hidden">
+                <div class="destination-card">
+                    <h3>Destination URL</h3>
+                    <p id="destinationUrl" class="destination-url"></p>
+                    <div class="countdown-container">
+                        <span class="countdown-label">Redirecting in</span>
+                        <span class="countdown-number" id="countdown">5</span>
+                        <span class="countdown-label">seconds</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="proceedNow" class="btn btn-primary">Proceed Now</button>
+                    <button id="cancelRedirect" class="btn btn-outline">Cancel</button>
+                </div>
+            </div>
+            
+            <div id="errorState" class="error-state hidden">
+                <div class="error-icon">⚠️</div>
+                <h2>Link Not Found</h2>
+                <p>The short link you requested could not be found or has expired.</p>
+                <button id="goHome" class="btn btn-primary">Return to EvansLinks</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function getShortCode() {
+            const hash = window.location.hash.substring(1);
+            return hash;
+        }
+
+        function redirectToOriginal(shortCode) {
+            try {
+                const links = JSON.parse(localStorage.getItem('evansLinks_links') || '[]');
+                const link = links.find(l => l.shortCode === shortCode);
+                
+                if (link && link.originalUrl) {
+                    // Update click count
+                    link.clicks = (link.clicks || 0) + 1;
+                    localStorage.setItem('evansLinks_links', JSON.stringify(links));
+                    
+                    // Show redirect info
+                    const redirectInfo = document.getElementById('redirectInfo');
+                    const errorState = document.getElementById('errorState');
+                    const destinationUrl = document.getElementById('destinationUrl');
+                    const countdown = document.getElementById('countdown');
+                    const progressFill = document.getElementById('progressFill');
+                    const proceedNow = document.getElementById('proceedNow');
+                    const cancelRedirect = document.getElementById('cancelRedirect');
+                    
+                    redirectInfo.classList.remove('hidden');
+                    destinationUrl.textContent = link.originalUrl;
+                    document.title = `Redirecting to ${new URL(link.originalUrl).hostname}`;
+                    
+                    // 5 second countdown with progress bar
+                    let seconds = 5;
+                    const totalSeconds = 5;
+                    
+                    const interval = setInterval(() => {
+                        seconds--;
+                        countdown.textContent = seconds;
+                        progressFill.style.width = `${((totalSeconds - seconds) / totalSeconds) * 100}%`;
+                        
+                        if (seconds <= 0) {
+                            clearInterval(interval);
+                            window.location.href = link.originalUrl;
+                        }
+                    }, 1000);
+                    
+                    // Button handlers
+                    proceedNow.addEventListener('click', () => {
+                        clearInterval(interval);
+                        window.location.href = link.originalUrl;
+                    });
+                    
+                    cancelRedirect.addEventListener('click', () => {
+                        clearInterval(interval);
+                        window.location.href = 'index.html';
+                    });
+                    
+                } else {
+                    throw new Error('Link not found');
+                }
+            } catch (error) {
+                const redirectInfo = document.getElementById('redirectInfo');
+                const errorState = document.getElementById('errorState');
+                const goHome = document.getElementById('goHome');
+                
+                document.querySelector('.loading-animation').style.display = 'none';
+                document.querySelector('.redirect-title').style.display = 'none';
+                document.querySelector('.redirect-message').style.display = 'none';
+                errorState.classList.remove('hidden');
+                
+                goHome.addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const shortCode = getShortCode();
+            
+            if (shortCode) {
+                setTimeout(() => {
+                    redirectToOriginal(shortCode);
+                }, 500);
+            } else {
+                // No short code found
+                const redirectInfo = document.getElementById('redirectInfo');
+                const errorState = document.getElementById('errorState');
+                const goHome = document.getElementById('goHome');
+                
+                document.querySelector('.loading-animation').style.display = 'none';
+                document.querySelector('.redirect-title').textContent = 'Invalid Link';
+                document.querySelector('.redirect-message').textContent = 'No valid short code found in this URL.';
+                errorState.classList.remove('hidden');
+                
+                goHome.addEventListener('click', () => {
+                    window.location.href = 'index.html';
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .redirect-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Inter', sans-serif;
+            padding: 1rem;
+        }
+
+        .redirect-container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .loading-animation {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .spinner-ring {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner-ring:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .spinner-ring:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .redirect-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1rem;
+        }
+
+        .redirect-message {
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+        }
+
+        .redirect-info {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .destination-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .destination-card h3 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+
+        .destination-url {
+            color: white;
+            word-break: break-all;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .countdown-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: white;
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .countdown-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #4ade80;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ade80, #22c55e);
+            border-radius: 2px;
+            transition: width 1s linear;
+            width: 0%;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .error-state {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .error-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .error-state h2 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1.875rem;
+        }
+
+        .error-state p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 2rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .redirect-container {
+                padding: 1rem;
+            }
+            
+            .redirect-title {
+                font-size: 2rem;
+            }
+            
+            .destination-card {
+                padding: 1.5rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .countdown-container {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+        }
+    </style>
+</body>
+</html>

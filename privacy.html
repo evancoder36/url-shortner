@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - EvansLinks</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔒</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <span class="brand-icon">🔗</span>
+                <span class="brand-text">EvansLinks</span>
+            </div>
+            <div class="theme-controls">
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+                    <span class="theme-icon">🌙</span>
+                    <span class="theme-text">Dark</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="doc-content">
+                <h1>Privacy Policy</h1>
+                <p class="doc-subtitle">Last updated: January 2024</p>
+                
+                <div class="doc-section">
+                    <h2>Information We Collect</h2>
+                    <p>EvansLinks is committed to protecting your privacy. We collect and store only the information necessary to provide our URL shortening service.</p>
+                    
+                    <h3>Data Storage</h3>
+                    <ul>
+                        <li><strong>Original URLs:</strong> The long URLs you shorten are stored locally in your browser</li>
+                        <li><strong>Short Codes:</strong> Generated or custom short codes are stored locally</li>
+                        <li><strong>Usage Analytics:</strong> Click counts and timestamps for your shortened links</li>
+                        <li><strong>Preferences:</strong> Theme preferences and settings are stored locally</li>
+                    </ul>
+                    
+                    <h3>What We Don't Collect</h3>
+                    <ul>
+                        <li>No personal information is transmitted to external servers</li>
+                        <li>No IP addresses or location data is collected</li>
+                        <li>No browsing history or personal data is tracked</li>
+                        <li>No data is shared with third parties</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Local Storage</h2>
+                    <p>All your data is stored locally in your browser's localStorage. This means:</p>
+                    <ul>
+                        <li>Your data remains private and under your control</li>
+                        <li>Data is accessible only in your current browser</li>
+                        <li>Clearing browser data will delete your shortened links</li>
+                        <li>Data is not synchronized across devices</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Data Security</h2>
+                    <p>We implement several security measures:</p>
+                    <ul>
+                        <li><strong>Client-side storage:</strong> All data remains in your browser</li>
+                        <li><strong>No server transmission:</strong> URLs are never sent to external servers</li>
+                        <li><strong>HTTPS encryption:</strong> When served over HTTPS</li>
+                        <li><strong>Input validation:</strong> All URLs are validated before storage</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Third-Party Services</h2>
+                    <p>EvansLinks may use external services for:</p>
+                    <ul>
+                        <li><strong>Google Fonts:</strong> For typography (CDN delivery)</li>
+                        <li><strong>Browser APIs:</strong> For localStorage functionality</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Your Rights</h2>
+                    <p>You have the right to:</p>
+                    <ul>
+                        <li>Access all your stored data</li>
+                        <li>Export your links at any time</li>
+                        <li>Delete individual links or all data</li>
+                        <li>Clear all browser data including your links</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Children's Privacy</h2>
+                    <p>EvansLinks does not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately.</p>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Changes to This Policy</h2>
+                    <p>We may update this privacy policy from time to time. Changes will be posted on this page with an updated revision date.</p>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Contact Us</h2>
+                    <p>If you have questions about this privacy policy, please contact us through our platform.</p>
+                </div>
+
+                <div class="doc-actions">
+                    <a href="index.html" class="btn btn-primary">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">Back to EvansLinks</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 EvansLinks. Privacy-focused URL shortening.</p>
+                <div class="footer-links">
+                    <a href="privacy.html" class="footer-link">Privacy Policy</a>
+                    <a href="terms.html" class="footer-link">Terms of Service</a>
+                    <a href="api.html" class="footer-link">API Documentation</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize theme for this page
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                document.body.classList.toggle('dark-theme', newTheme === 'dark');
+                localStorage.setItem('evansLinks_theme', newTheme);
+                
+                const themeIcon = themeToggle.querySelector('.theme-icon');
+                const themeText = themeToggle.querySelector('.theme-text');
+                
+                if (newTheme === 'dark') {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Light';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Dark';
+                }
+            });
+            
+            // Load saved theme
+            const savedTheme = localStorage.getItem('evansLinks_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.classList.toggle('dark-theme', savedTheme === 'dark');
+            
+            const themeIcon = themeToggle.querySelector('.theme-icon');
+            const themeText = themeToggle.querySelector('.theme-text');
+            
+            if (savedTheme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+            }
+        });
+    </script>
+
+    <style>
+        .doc-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .doc-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .doc-section {
+            margin-bottom: 3rem;
+        }
+
+        .doc-section h2 {
+            color: var(--text-primary);
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .doc-section h3 {
+            color: var(--text-primary);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+        }
+
+        .doc-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .doc-section ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .doc-section li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .doc-section li strong {
+            color: var(--text-primary);
+        }
+
+        .doc-actions {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .doc-content {
+                padding: 1rem 0;
+            }
+            
+            .doc-section h2 {
+                font-size: 1.5rem;
+            }
+            
+            .doc-section h3 {
+                font-size: 1.125rem;
+            }
+        }
+    </style>
+</body>
+</html>

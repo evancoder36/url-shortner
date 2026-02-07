@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation - EvansLinks</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <span class="brand-icon">🔗</span>
+                <span class="brand-text">EvansLinks</span>
+            </div>
+            <div class="theme-controls">
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+                    <span class="theme-icon">🌙</span>
+                    <span class="theme-text">Dark</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <div class="doc-content">
+                <h1>API Documentation</h1>
+                <p class="doc-subtitle">Client-side API for EvansLinks URL shortener</p>
+                
+                <div class="doc-section">
+                    <h2>Overview</h2>
+                    <p>EvansLinks provides a client-side JavaScript API for integrating URL shortening functionality into your applications. The API operates entirely in the browser using localStorage for data persistence.</p>
+                    
+                    <div class="api-notice">
+                        <h3>🚀 Important Notice</h3>
+                        <p>This is a <strong>client-side API</strong> that operates entirely in the browser. There are no HTTP endpoints or server components. All data is stored locally using localStorage.</p>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Getting Started</h2>
+                    <p>To use the EvansLinks API in your project:</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">HTML</div>
+                        <pre><code>&lt;!-- Include the EvansLinks JavaScript --&gt;
+&lt;script src="app.js"&gt;&lt;/script&gt;
+
+&lt;!-- Initialize the API --&gt;
+&lt;script&gt;
+    const evansLinks = new EvansLinksAPI();
+&lt;/script&gt;</code></pre>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Core Methods</h2>
+                    
+                    <div class="api-method">
+                        <h3>createShortLink(url, options)</h3>
+                        <p>Creates a shortened URL from a long URL.</p>
+                        
+                        <div class="method-params">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><strong>url</strong> (string): The original URL to shorten</li>
+                                <li><strong>options</strong> (object, optional): Configuration options
+                                    <ul>
+                                        <li><strong>customCode</strong> (string): Custom short code</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>Object containing the shortened link information.</p>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>const result = evansLinks.createShortLink('https://example.com/very-long-url', {
+    customCode: 'my-link'
+});
+
+console.log(result);
+// Output: {
+//   id: "1642848000000",
+//   originalUrl: "https://example.com/very-long-url",
+//   shortCode: "my-link",
+//   shortUrl: "evanlinks.com/my-link",
+//   customDomain: "my-link",
+//   createdAt: "2024-01-01T00:00:00.000Z",
+//   clicks: 0
+// }</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="api-method">
+                        <h3>getLink(shortCode)</h3>
+                        <p>Retrieves a link by its short code.</p>
+                        
+                        <div class="method-params">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><strong>shortCode</strong> (string): The short code to retrieve</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>Object containing the link information, or null if not found.</p>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>const link = evansLinks.getLink('my-link');
+if (link) {
+    console.log(`Original URL: ${link.originalUrl}`);
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="api-method">
+                        <h3>getAllLinks()</h3>
+                        <p>Retrieves all stored links.</p>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>Array of link objects.</p>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>const links = evansLinks.getAllLinks();
+console.log(`Total links: ${links.length}`);
+
+links.forEach(link => {
+    console.log(`${link.shortUrl} -> ${link.originalUrl}`);
+});</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="api-method">
+                        <h3>deleteLink(shortCode)</h3>
+                        <p>Deletes a link by its short code.</p>
+                        
+                        <div class="method-params">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><strong>shortCode</strong> (string): The short code to delete</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>Boolean indicating success (true) or failure (false).</p>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>const success = evansLinks.deleteLink('old-link');
+if (success) {
+    console.log('Link deleted successfully');
+}</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="api-method">
+                        <h3>incrementClicks(shortCode)</h3>
+                        <p>Increments the click count for a link.</p>
+                        
+                        <div class="method-params">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><strong>shortCode</strong> (string): The short code to increment</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>Boolean indicating success (true) or failure (false).</p>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>evansLinks.incrementClicks('my-link');</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Utility Methods</h2>
+                    
+                    <div class="api-method">
+                        <h3>exportLinks()</h3>
+                        <p>Exports all links as JSON data.</p>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>String containing JSON data.</p>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>const jsonData = evansLinks.exportLinks();
+const blob = new Blob([jsonData], { type: 'application/json' });
+const url = URL.createObjectURL(blob);
+
+const a = document.createElement('a');
+a.href = url;
+a.download = 'evanslinks-export.json';
+a.click();</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="api-method">
+                        <h3>importLinks(jsonData)</h3>
+                        <p>Imports links from JSON data.</p>
+                        
+                        <div class="method-params">
+                            <h4>Parameters</h4>
+                            <ul>
+                                <li><strong>jsonData</strong> (string): JSON data to import</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>Boolean indicating success (true) or failure (false).</p>
+                        </div>
+                    </div>
+
+                    <div class="api-method">
+                        <h3>getStats()</h3>
+                        <p>Gets statistics about stored links.</p>
+                        
+                        <div class="method-returns">
+                            <h4>Returns</h4>
+                            <p>Object containing statistics.</p>
+                        </div>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>const stats = evansLinks.getStats();
+console.log(stats);
+// Output: {
+//   totalLinks: 25,
+//   totalClicks: 150,
+//   averageClicksPerLink: 6,
+//   mostPopularLink: "evanlinks.com/popular",
+//   createdToday: 3
+// }</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Data Structure</h2>
+                    
+                    <div class="api-method">
+                        <h3>Link Object</h3>
+                        <p>Each link is stored as an object with the following structure:</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Link Object Structure</div>
+                            <pre><code>{
+    id: "1642848000000",
+    originalUrl: "https://example.com/very-long-url",
+    shortCode: "abc",
+    shortUrl: "evanlinks.com/abc",
+    customDomain: null,
+    createdAt: "2024-01-01T00:00:00.000Z",
+    clicks: 5
+}</code></pre>
+                        </div>
+                        
+                        <div class="method-params">
+                            <h4>Fields</h4>
+                            <ul>
+                                <li><strong>id</strong> (string): Unique identifier</li>
+                                <li><strong>originalUrl</strong> (string): The original URL</li>
+                                <li><strong>shortCode</strong> (string): Generated or custom short code</li>
+                                <li><strong>shortUrl</strong> (string): Complete short URL</li>
+                                <li><strong>customDomain</strong> (string|null): Custom short code or null</li>
+                                <li><strong>createdAt</strong> (string): ISO timestamp</li>
+                                <li><strong>clicks</strong> (number): Total click count</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Events</h2>
+                    <p>The API emits events for various actions:</p>
+                    
+                    <div class="api-method">
+                        <h3>Event Listeners</h3>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Example</div>
+                            <pre><code>// Listen for link creation
+evansLinks.on('linkCreated', (link) => {
+    console.log('New link created:', link.shortUrl);
+});
+
+// Listen for link deletion
+evansLinks.on('linkDeleted', (shortCode) => {
+    console.log('Link deleted:', shortCode);
+});
+
+// Listen for click increment
+evansLinks.on('clickIncremented', (shortCode, clicks) => {
+    console.log(`Link ${shortCode} now has ${clicks} clicks`);
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Error Handling</h2>
+                    <p>API methods may throw errors for various reasons:</p>
+                    
+                    <div class="code-block">
+                        <div class="code-header">Example</div>
+                        <pre><code>try {
+    const result = evansLinks.createShortLink(invalidUrl);
+} catch (error) {
+    console.error('Error:', error.message);
+    // Common errors:
+    // "Please enter a valid URL"
+    // "This custom ID is already taken"
+    // "Unable to generate unique short code"
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="doc-section">
+                    <h2>Integration Examples</h2>
+                    
+                    <div class="api-method">
+                        <h3>Custom Form Integration</h3>
+                        
+                        <div class="code-block">
+                            <div class="code-header">Custom URL Shortener Form</div>
+                            <pre><code>&lt;form id="myForm"&gt;
+    &lt;input type="url" id="urlInput" placeholder="Enter URL" required&gt;
+    &lt;input type="text" id="customInput" placeholder="Custom code (optional)"&gt;
+    &lt;button type="submit"&gt;Create Short Link&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;div id="result"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+    const evansLinks = new EvansLinksAPI();
+    
+    document.getElementById('myForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const url = document.getElementById('urlInput').value;
+        const customCode = document.getElementById('customInput').value || null;
+        
+        try {
+            const result = evansLinks.createShortLink(url, { customCode });
+            document.getElementById('result').innerHTML = `
+                &lt;p&gt;Short URL: &lt;a href="${result.shortUrl}"&gt;${result.shortUrl}&lt;/a&gt;&lt;/p&gt;
+            `;
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+&lt;/script&gt;</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="doc-actions">
+                    <a href="index.html" class="btn btn-primary">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">Back to EvansLinks</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 EvansLinks. Developer-friendly URL shortening.</p>
+                <div class="footer-links">
+                    <a href="privacy.html" class="footer-link">Privacy Policy</a>
+                    <a href="terms.html" class="footer-link">Terms of Service</a>
+                    <a href="api.html" class="footer-link">API Documentation</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize theme for this page
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('themeToggle');
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                document.body.classList.toggle('dark-theme', newTheme === 'dark');
+                localStorage.setItem('evansLinks_theme', newTheme);
+                
+                const themeIcon = themeToggle.querySelector('.theme-icon');
+                const themeText = themeToggle.querySelector('.theme-text');
+                
+                if (newTheme === 'dark') {
+                    themeIcon.textContent = '☀️';
+                    themeText.textContent = 'Light';
+                } else {
+                    themeIcon.textContent = '🌙';
+                    themeText.textContent = 'Dark';
+                }
+            });
+            
+            // Load saved theme
+            const savedTheme = localStorage.getItem('evansLinks_theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.body.classList.toggle('dark-theme', savedTheme === 'dark');
+            
+            const themeIcon = themeToggle.querySelector('.theme-icon');
+            const themeText = themeToggle.querySelector('.theme-text');
+            
+            if (savedTheme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.textContent = 'Light';
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.textContent = 'Dark';
+            }
+        });
+    </script>
+
+    <style>
+        .doc-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 0;
+        }
+
+        .doc-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.125rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .api-notice {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+        }
+
+        .api-notice h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.125rem;
+        }
+
+        .api-notice p {
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        .api-notice strong {
+            color: #ffeb3b;
+        }
+
+        .api-method {
+            background: var(--bg-tertiary);
+            padding: 2rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .api-method h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .method-params, .method-returns {
+            margin-bottom: 1.5rem;
+        }
+
+        .method-params h4, .method-returns h4 {
+            color: var(--text-primary);
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: var(--radius-lg);
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+
+        [data-theme="dark"] .code-block {
+            background: #0d1117;
+        }
+
+        .code-header {
+            background: #2d2d30;
+            color: #cccccc;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-bottom: 1px solid #404040;
+        }
+
+        [data-theme="dark"] .code-header {
+            background: #161b22;
+            border-bottom-color: #30363d;
+        }
+
+        .code-block pre {
+            margin: 0;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .doc-section {
+            margin-bottom: 3rem;
+        }
+
+        .doc-section h2 {
+            color: var(--text-primary);
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .doc-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .doc-section ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .doc-section li {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .doc-section li strong {
+            color: var(--text-primary);
+        }
+
+        .doc-actions {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .doc-content {
+                padding: 1rem 0;
+            }
+            
+            .api-method {
+                padding: 1.5rem;
+            }
+            
+            .api-method h3 {
+                font-size: 1.25rem;
+            }
+            
+            .code-block pre {
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</body>
+</html>

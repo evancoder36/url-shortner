@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvansLinks - Free URL Shortener</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔗</text></svg>">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <span class="brand-icon">🔗</span>
+                <span class="brand-text">EvansLinks</span>
+            </div>
+            <div class="nav-actions">
+                <div class="nav-stats">
+                    <span class="stat-item">
+                        <span class="stat-number" id="totalLinks">0</span>
+                        <span class="stat-label">Links</span>
+                    </span>
+                    <span class="stat-item">
+                        <span class="stat-number" id="totalClicks">0</span>
+                        <span class="stat-label">Clicks</span>
+                    </span>
+                </div>
+                <div class="theme-controls">
+                    <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+                        <span class="theme-icon">🌙</span>
+                        <span class="theme-text">Dark</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">Shorten URLs with EvansLinks</h1>
+                <p class="hero-subtitle">Create short, memorable links that track performance and drive results</p>
+            </div>
+        </section>
+
+        <section class="shorten-section">
+            <div class="container">
+                <div class="shorten-card">
+                    <form id="urlForm" class="shorten-form">
+                        <div class="input-group">
+                            <div class="input-wrapper">
+                                <input 
+                                    type="url" 
+                                    id="urlInput" 
+                                    class="url-input"
+                                    placeholder="Enter your long URL here..."
+                                    required
+                                    autocomplete="url"
+                                >
+                                <div class="input-icon">🌐</div>
+                            </div>
+                            <button type="submit" id="shortenBtn" class="btn btn-primary">
+                                <span class="btn-text">Shorten</span>
+                                <span class="btn-icon">✨</span>
+                            </button>
+                        </div>
+                        
+                        <div class="advanced-options">
+                            <button type="button" id="advancedToggle" class="advanced-toggle">
+                                <span>Advanced Options</span>
+                                <span class="toggle-icon">▼</span>
+                            </button>
+                            <div id="advancedPanel" class="advanced-panel hidden">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="customDomain" class="form-label">Custom ID (optional)</label>
+                                        <input 
+                                            type="text" 
+                                            id="customDomain" 
+                                            class="form-input"
+                                            placeholder="my-custom-link"
+                                            maxlength="20"
+                                            pattern="[a-zA-Z0-9-_]+"
+                                        >
+                                        <small class="form-help">Letters, numbers, hyphens, and underscores only</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div id="resultSection" class="result-section hidden">
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="success-icon">✅</div>
+                            <h3>Your Short Link is Ready!</h3>
+                        </div>
+                        
+                        <div class="url-display">
+                            <div class="short-url-box">
+                                <input type="text" id="shortUrl" class="short-url-input" readonly>
+                                <button id="copyBtn" class="btn btn-secondary">
+                                    <span class="btn-icon">📋</span>
+                                    <span class="btn-text">Copy</span>
+                                </button>
+                            </div>
+                            <div class="test-options">
+                                <a href="#" id="testLink" class="test-link">
+                                    <span class="test-icon">🧪</span>
+                                    Test this link
+                                </a>
+                                <button id="qrBtn" class="btn btn-outline">
+                                    <span class="btn-icon">📱</span>
+                                    <span class="btn-text">QR Code</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="result-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Original URL:</span>
+                                <span class="detail-value" id="originalUrl"></span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Created:</span>
+                                <span class="detail-value" id="createdTime"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="links-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Your Links</h2>
+                    <div class="section-actions">
+                        <button id="clearAllBtn" class="btn btn-outline btn-sm">Clear All</button>
+                        <button id="exportBtn" class="btn btn-outline btn-sm">Export</button>
+                    </div>
+                </div>
+                
+                <div class="links-grid">
+                    <div id="linksList" class="links-list">
+                        <div class="empty-state">
+                            <div class="empty-icon">📋</div>
+                            <h3>No links yet</h3>
+                            <p>Create your first short link above to get started!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 EvansLinks. Made with ❤️ for fast, reliable link shortening.</p>
+                <div class="footer-links">
+                    <a href="privacy.html" class="footer-link">Privacy Policy</a>
+                    <a href="terms.html" class="footer-link">Terms of Service</a>
+                    <a href="api.html" class="footer-link">API Documentation</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div id="toast" class="toast"></div>
+    <div id="qrModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>QR Code</h3>
+                <button id="closeModal" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div id="qrCodeContainer"></div>
+                <button id="downloadQR" class="btn btn-primary">Download QR Code</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

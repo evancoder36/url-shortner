@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Shortener</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔗 Link Shortener</h1>
+            <p>Turn your long URLs into short, shareable links</p>
+        </header>
+
+        <main>
+            <section class="url-form-section">
+                <form id="urlForm">
+                    <div class="input-group">
+                        <input 
+                            type="url" 
+                            id="urlInput" 
+                            placeholder="Enter your long URL here..." 
+                            required
+                            pattern="https?://.+"
+                        >
+                        <button type="submit" id="shortenBtn">Shorten</button>
+                    </div>
+                    <div class="custom-domain">
+                        <label for="customDomain">Custom link ID (optional):</label>
+                        <input 
+                            type="text" 
+                            id="customDomain" 
+                            placeholder="mylink"
+                            maxlength="20"
+                        >
+                        <small>Leave blank for auto-generated ID (3 characters)</small>
+                    </div>
+                </form>
+            </section>
+
+            <section id="resultSection" class="result-section hidden">
+                <div class="result-card">
+                    <h3>✨ Your short URL is ready!</h3>
+                    <div class="url-display">
+                        <input type="text" id="shortUrl" readonly>
+                        <button id="copyBtn" class="copy-btn">📋 Copy</button>
+                    </div>
+                    <div class="url-stats">
+                        <span>Original: <span id="originalUrl"></span></span>
+                        <span>Created: <span id="createdTime"></span></span>
+                    </div>
+                    <div class="test-redirect">
+                        <p>🧪 <strong>Test this link:</strong></p>
+                        <a href="#" id="testLink" class="test-link">Click here to redirect in <span id="countdown">3</span> seconds</a>
+                        <button id="testNowBtn" class="test-now-btn">Test Now</button>
+                    </div>
+                    <p class="usage-note">
+                        <small>💡 Demo links show as evanlinks.com/xyz - Test goes to redirect page</small>
+                    </p>
+                </div>
+            </section>
+
+            <section id="linksSection" class="links-section">
+                <h2>📋 Your Links</h2>
+                <div id="linksList" class="links-list">
+                    <p class="no-links">No links yet. Create your first short link above!</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Made with ❤️ | Your personal link shortener</p>
+        </footer>
+    </div>
+
+    <div id="toast" class="toast hidden"></div>
+    
+    <script src="script.js"></script>
+    <script>
+        // Check for redirect hash on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                // Handle redirect logic here
+                setTimeout(() => {
+                    const links = JSON.parse(localStorage.getItem('shortenedLinks') || '[]');
+                    const link = links.find(l => l.shortCode === hash);
+                    
+                    if (link && link.originalUrl) {
+                        link.clicks = (link.clicks || 0) + 1;
+                        localStorage.setItem('shortenedLinks', JSON.stringify(links));
+                        
+                        document.title = 'Redirecting...';
+                        document.body.innerHTML = `
+                            <div class="redirect-container">
+                                <div class="spinner"></div>
+                                <h2>Redirecting...</h2>
+                                <p>You will be redirected to your destination shortly.</p>
+                                <small>Going to: ${link.originalUrl}</small>
+                            </div>
+                        `;
+                        
+                        setTimeout(() => {
+                            window.location.href = link.originalUrl;
+                        }, 5000);
+                    } else {
+                        document.body.innerHTML = `
+                            <div class="redirect-container">
+                                <h2>Link Not Found</h2>
+                                <p>The short link you requested could not be found.</p>
+                                <a href="app.html" class="home-link">Return to Link Shortener</a>
+                            </div>
+                        `;
+                    }
+                }, 100);
+            }
+        });
+    </script>
+</body>
+</html>
