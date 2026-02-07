@@ -71,7 +71,7 @@ class ShortLinkPro {
     }
 
     generateShortUrl(shortCode) {
-        return `evanlinks.com/${shortCode}`;
+        return `${window.location.host}${window.location.pathname.replace(/\/[^/]*$/, '')}/redirect.html#${shortCode}`;
     }
 
     validateUrl(url) {
