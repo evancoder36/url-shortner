@@ -160,18 +160,33 @@
             
             document.title = `Redirecting to ${new URL(link.originalUrl).hostname}`;
             
-            // 5 second countdown with progress bar
+            // 5 second countdown with smooth progress bar
             let seconds = 5;
             const totalSeconds = 5;
             
             const interval = setInterval(() => {
                 seconds--;
-                countdown.textContent = seconds;
-                progressFill.style.width = `${((totalSeconds - seconds) / totalSeconds) * 100}%`;
+                const progressSeconds = Math.max(0, seconds);
+                countdown.textContent = progressSeconds;
                 
-                if (seconds <= 0) {
+                // Smooth progress animation
+                const progress = ((totalSeconds - progressSeconds) / totalSeconds) * 100;
+                progressFill.style.transition = 'width 0.3s ease-out';
+                progressFill.style.width = `${progress}%`;
+                
+                if (progressSeconds <= 0) {
                     clearInterval(interval);
-                    window.location.href = link.originalUrl;
+                    countdown.textContent = 'Redirecting...';
+                    progressFill.style.width = '100%';
+                    
+                    // Smooth redirect with slight delay for better UX
+                    setTimeout(() => {
+                        document.body.style.opacity = '0.8';
+                        setTimeout(() => {
+                            window.location.href = link.originalUrl;
+                        }, 200);
+                    }, 300);
+                    return;
                 }
             }, 1000);
             
@@ -290,6 +305,30 @@
             animation: fadeInUp 0.5s ease-out forwards;
         }
 
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .countdown-number {
+            animation: pulse 1s ease-in-out infinite;
+        }
+
         .destination-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -344,8 +383,12 @@
             height: 100%;
             background: linear-gradient(90deg, #4ade80, #22c55e);
             border-radius: 2px;
-            transition: width 1s linear;
+            transition: width 0.3s ease-out;
             width: 0%;
+        }
+
+        body {
+            transition: opacity 0.3s ease-out;
         }
 
         .action-buttons {
