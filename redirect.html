@@ -146,6 +146,7 @@
                         <span class="countdown-label">Redirecting in</span>
                         <span class="countdown-number" id="countdown">5</span>
                         <span class="countdown-label">seconds</span>
+                        <span class="countdown-debug" id="debugInfo"></span>
                     </div>
                     <div class="progress-bar">
                         <div class="progress-fill" id="progressFill"></div>
@@ -164,28 +165,40 @@
             let seconds = 5;
             const totalSeconds = 5;
             
+            // Initial setup
+            countdown.textContent = '5';
+            progressFill.style.width = '0%';
+            progressFill.style.transition = 'width 1s linear';
+            
             const interval = setInterval(() => {
                 seconds--;
-                const progressSeconds = Math.max(0, seconds);
-                countdown.textContent = progressSeconds;
+                const currentSecond = Math.max(0, seconds);
+                countdown.textContent = currentSecond;
                 
-                // Smooth progress animation
-                const progress = ((totalSeconds - progressSeconds) / totalSeconds) * 100;
-                progressFill.style.transition = 'width 0.3s ease-out';
+                // Calculate progress based on remaining time
+                const progress = ((totalSeconds - currentSecond) / totalSeconds) * 100;
                 progressFill.style.width = `${progress}%`;
                 
-                if (progressSeconds <= 0) {
+                // Debug info display
+                const debugInfo = document.getElementById('debugInfo');
+                if (debugInfo) {
+                    debugInfo.textContent = `[${currentSecond}s left, ${progress.toFixed(1)}%]`;
+                }
+                
+                if (currentSecond <= 0) {
                     clearInterval(interval);
                     countdown.textContent = 'Redirecting...';
                     progressFill.style.width = '100%';
                     
-                    // Smooth redirect with slight delay for better UX
+                    // Smooth redirect with final animation
                     setTimeout(() => {
+                        document.body.style.transition = 'opacity 0.5s ease-out';
                         document.body.style.opacity = '0.8';
+                        
                         setTimeout(() => {
                             window.location.href = link.originalUrl;
-                        }, 200);
-                    }, 300);
+                        }, 500);
+                    }, 200);
                     return;
                 }
             }, 1000);
@@ -329,6 +342,16 @@
             animation: pulse 1s ease-in-out infinite;
         }
 
+        .countdown-debug {
+            font-size: 0.75rem;
+            color: #ffeb3b;
+            margin-left: 1rem;
+            font-family: 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+
         .destination-card {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -383,8 +406,9 @@
             height: 100%;
             background: linear-gradient(90deg, #4ade80, #22c55e);
             border-radius: 2px;
-            transition: width 0.3s ease-out;
+            transition: width 1s linear;
             width: 0%;
+            box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
         }
 
         body {
