@@ -55,72 +55,150 @@
             return hash;
         }
 
-        function redirectToOriginal(shortCode) {
-            try {
-                const links = JSON.parse(localStorage.getItem('evansLinks_links') || '[]');
-                const link = links.find(l => l.shortCode === shortCode);
-                
-                if (link && link.originalUrl) {
-                    // Update click count
-                    link.clicks = (link.clicks || 0) + 1;
-                    localStorage.setItem('evansLinks_links', JSON.stringify(links));
-                    
-                    // Show redirect info
-                    const redirectInfo = document.getElementById('redirectInfo');
-                    const errorState = document.getElementById('errorState');
-                    const destinationUrl = document.getElementById('destinationUrl');
-                    const countdown = document.getElementById('countdown');
-                    const progressFill = document.getElementById('progressFill');
-                    const proceedNow = document.getElementById('proceedNow');
-                    const cancelRedirect = document.getElementById('cancelRedirect');
-                    
-                    redirectInfo.classList.remove('hidden');
-                    destinationUrl.textContent = link.originalUrl;
-                    document.title = `Redirecting to ${new URL(link.originalUrl).hostname}`;
-                    
-                    // 5 second countdown with progress bar
-                    let seconds = 5;
-                    const totalSeconds = 5;
-                    
-                    const interval = setInterval(() => {
-                        seconds--;
-                        countdown.textContent = seconds;
-                        progressFill.style.width = `${((totalSeconds - seconds) / totalSeconds) * 100}%`;
-                        
-                        if (seconds <= 0) {
-                            clearInterval(interval);
-                            window.location.href = link.originalUrl;
-                        }
-                    }, 1000);
-                    
-                    // Button handlers
-                    proceedNow.addEventListener('click', () => {
-                        clearInterval(interval);
-                        window.location.href = link.originalUrl;
-                    });
-                    
-                    cancelRedirect.addEventListener('click', () => {
-                        clearInterval(interval);
-                        window.location.href = 'index.html';
-                    });
-                    
-                } else {
-                    throw new Error('Link not found');
-                }
-            } catch (error) {
-                const redirectInfo = document.getElementById('redirectInfo');
-                const errorState = document.getElementById('errorState');
-                const goHome = document.getElementById('goHome');
-                
-                document.querySelector('.loading-animation').style.display = 'none';
-                document.querySelector('.redirect-title').style.display = 'none';
-                document.querySelector('.redirect-message').style.display = 'none';
-                errorState.classList.remove('hidden');
-                
-                goHome.addEventListener('click', () => {
-                    window.location.href = 'index.html';
-                });
+        function checkPasswordAndRedirect(shortCode) {
+            const links = JSON.parse(localStorage.getItem('evansLinks_links') || '[]');
+            const link = links.find(l => l.shortCode === shortCode);
+            
+            if (!link) {
+                showError('Link not found');
+                return;
             }
+
+            // Check if link is expired
+            if (link.expiryDate) {
+                const expiry = new Date(link.expiryDate);
+                const now = new Date();
+                if (expiry <= now) {
+                    showError('Link has expired');
+                    return;
+                }
+            }
+
+            // Check password protection
+            if (link.password) {
+                showPasswordPrompt(link, links);
+            } else {
+                proceedWithRedirect(link, links);
+            }
+        }
+
+        function showPasswordPrompt(link, links) {
+            const redirectInfo = document.getElementById('redirectInfo');
+            const errorState = document.getElementById('errorState');
+            
+            document.querySelector('.loading-animation').style.display = 'none';
+            document.querySelector('.redirect-title').textContent = 'Password Protected Link';
+            document.querySelector('.redirect-message').textContent = 'This link is protected with a password.';
+            
+            redirectInfo.innerHTML = `
+                <div class="password-form">
+                    <div class="destination-card">
+                        <h3>🔒 Password Required</h3>
+                        <p>Enter the password to access this link.</p>
+                        <div class="password-input-group">
+                            <input type="password" id="passwordInput" placeholder="Enter password" class="form-input">
+                            <button id="submitPassword" class="btn btn-primary">Unlock</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            redirectInfo.classList.remove('hidden');
+            
+            document.getElementById('submitPassword').addEventListener('click', () => {
+                const passwordInput = document.getElementById('passwordInput');
+                const enteredPassword = passwordInput.value;
+                
+                if (enteredPassword === link.password) {
+                    proceedWithRedirect(link, links);
+                } else {
+                    passwordInput.style.borderColor = 'var(--error)';
+                    passwordInput.value = '';
+                    alert('Incorrect password. Please try again.');
+                }
+            });
+            
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    document.getElementById('submitPassword').click();
+                }
+            });
+        }
+
+        function proceedWithRedirect(link, links) {
+            // Update click count
+            link.clicks = (link.clicks || 0) + 1;
+            localStorage.setItem('evansLinks_links', JSON.stringify(links));
+            
+            // Show redirect info
+            const redirectInfo = document.getElementById('redirectInfo');
+            const destinationUrl = document.getElementById('destinationUrl');
+            const countdown = document.getElementById('countdown');
+            const progressFill = document.getElementById('progressFill');
+            const proceedNow = document.getElementById('proceedNow');
+            const cancelRedirect = document.getElementById('cancelRedirect');
+            
+            redirectInfo.innerHTML = `
+                <div class="destination-card">
+                    <h3>✅ Access Granted</h3>
+                    <p id="destinationUrl" class="destination-url">${link.originalUrl}</p>
+                    <div class="countdown-container">
+                        <span class="countdown-label">Redirecting in</span>
+                        <span class="countdown-number" id="countdown">5</span>
+                        <span class="countdown-label">seconds</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="proceedNow" class="btn btn-primary">Proceed Now</button>
+                    <button id="cancelRedirect" class="btn btn-outline">Cancel</button>
+                </div>
+            `;
+            
+            document.title = `Redirecting to ${new URL(link.originalUrl).hostname}`;
+            
+            // 5 second countdown with progress bar
+            let seconds = 5;
+            const totalSeconds = 5;
+            
+            const interval = setInterval(() => {
+                seconds--;
+                countdown.textContent = seconds;
+                progressFill.style.width = `${((totalSeconds - seconds) / totalSeconds) * 100}%`;
+                
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    window.location.href = link.originalUrl;
+                }
+            }, 1000);
+            
+            // Button handlers
+            document.getElementById('proceedNow').addEventListener('click', () => {
+                clearInterval(interval);
+                window.location.href = link.originalUrl;
+            });
+            
+            document.getElementById('cancelRedirect').addEventListener('click', () => {
+                clearInterval(interval);
+                window.location.href = 'index.html';
+            });
+        }
+
+        function showError(message) {
+            const errorState = document.getElementById('errorState');
+            const goHome = document.getElementById('goHome');
+            
+            document.querySelector('.loading-animation').style.display = 'none';
+            document.querySelector('.redirect-title').textContent = 'Error';
+            document.querySelector('.redirect-message').textContent = message;
+            errorState.classList.remove('hidden');
+            
+            goHome.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -128,11 +206,10 @@
             
             if (shortCode) {
                 setTimeout(() => {
-                    redirectToOriginal(shortCode);
+                    checkPasswordAndRedirect(shortCode);
                 }, 500);
             } else {
                 // No short code found
-                const redirectInfo = document.getElementById('redirectInfo');
                 const errorState = document.getElementById('errorState');
                 const goHome = document.getElementById('goHome');
                 

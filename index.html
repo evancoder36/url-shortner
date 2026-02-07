@@ -72,20 +72,60 @@
                                 <span class="toggle-icon">▼</span>
                             </button>
                             <div id="advancedPanel" class="advanced-panel hidden">
-                                <div class="form-row">
-                                    <div class="form-group">
-                                        <label for="customDomain" class="form-label">Custom ID (optional)</label>
-                                        <input 
-                                            type="text" 
-                                            id="customDomain" 
-                                            class="form-input"
-                                            placeholder="my-custom-link"
-                                            maxlength="20"
-                                            pattern="[a-zA-Z0-9-_]+"
-                                        >
-                                        <small class="form-help">Letters, numbers, hyphens, and underscores only</small>
-                                    </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="customDomain" class="form-label">Custom ID (optional)</label>
+                                <input 
+                                    type="text" 
+                                    id="customDomain" 
+                                    class="form-input"
+                                    placeholder="my-custom-link"
+                                    maxlength="20"
+                                    pattern="[a-zA-Z0-9-_]+"
+                                >
+                                <small class="form-help">Letters, numbers, hyphens, and underscores only</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="linkPassword" class="form-label">Link Password (optional)</label>
+                                <div class="password-input-wrapper">
+                                    <input 
+                                        type="password" 
+                                        id="linkPassword" 
+                                        class="form-input"
+                                        placeholder="Protect link with password"
+                                    >
+                                    <button type="button" id="togglePassword" class="password-toggle">👁️</button>
                                 </div>
+                                <small class="form-help">Users will need password to access the link</small>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiryDate" class="form-label">Expiry Date (optional)</label>
+                                <input 
+                                    type="datetime-local" 
+                                    id="expiryDate" 
+                                    class="form-input"
+                                    min=""
+                                >
+                                <small class="form-help">Link will expire after this date</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="linkCategory" class="form-label">Category (optional)</label>
+                                <select id="linkCategory" class="form-input">
+                                    <option value="">No category</option>
+                                    <option value="social">Social Media</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="personal">Personal</option>
+                                    <option value="business">Business</option>
+                                    <option value="education">Education</option>
+                                    <option value="entertainment">Entertainment</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="other">Other</option>
+                                </select>
+                                <small class="form-help">Organize your links better</small>
+                            </div>
+                        </div>
                             </div>
                         </div>
                     </form>
@@ -133,11 +173,81 @@
             </div>
         </section>
 
+        <section id="analyticsSection" class="analytics-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>📊 Analytics Dashboard</h2>
+                    <div class="section-actions">
+                        <select id="categoryFilter" class="form-input">
+                            <option value="">All Categories</option>
+                            <option value="social">Social Media</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="personal">Personal</option>
+                            <option value="business">Business</option>
+                            <option value="education">Education</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="technology">Technology</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <button id="refreshAnalytics" class="btn btn-outline btn-sm">Refresh</button>
+                    </div>
+                </div>
+                
+                <div class="analytics-cards">
+                    <div class="analytics-card">
+                        <h3>📈 Total Links</h3>
+                        <div class="analytics-number" id="totalLinksAnalytics">0</div>
+                        <div class="analytics-change positive" id="linksChange">+0</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>👥 Total Clicks</h3>
+                        <div class="analytics-number" id="totalClicksAnalytics">0</div>
+                        <div class="analytics-change positive" id="clicksChange">+0</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>🔥 Popular Link</h3>
+                        <div class="analytics-top-link" id="popularLink">-</div>
+                        <div class="analytics-subtitle" id="popularClicks">0 clicks</div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>📅 Created Today</h3>
+                        <div class="analytics-number" id="todayLinks">0</div>
+                        <div class="analytics-subtitle">This week: <span id="weekLinks">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="analytics-charts">
+                    <div class="chart-container">
+                        <h3>Clicks by Category</h3>
+                        <canvas id="categoryChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Daily Activity</h3>
+                        <canvas id="activityChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="links-section">
             <div class="container">
                 <div class="section-header">
                     <h2>Your Links</h2>
                     <div class="section-actions">
+                        <select id="categoryFilterLinks" class="form-input">
+                            <option value="">All Categories</option>
+                            <option value="social">Social Media</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="personal">Personal</option>
+                            <option value="business">Business</option>
+                            <option value="education">Education</option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="technology">Technology</option>
+                            <option value="other">Other</option>
+                        </select>
                         <button id="clearAllBtn" class="btn btn-outline btn-sm">Clear All</button>
                         <button id="exportBtn" class="btn btn-outline btn-sm">Export</button>
                     </div>
